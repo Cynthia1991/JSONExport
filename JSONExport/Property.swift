@@ -37,6 +37,8 @@ Represents all the meta data needed to export a JSON property in a valid syntax 
 */
 class Property : Equatable{
     
+    var parentName : String
+    
     /**
     The native name that is suitable to export the JSON property in the target language
     */
@@ -110,9 +112,11 @@ class Property : Equatable{
         string = string.replacingOccurrences(of: varType, with: type)
         string = string.replacingOccurrences(of: varName, with: nativeName)
         string = string.replacingOccurrences(of: jsonKeyName, with: jsonName)
+        string = string.replacingOccurrences(of: modelName, with: parentName)
         return string
     }
     
+ 
     func toConstVar(_ className: String) -> String
     {
         var string : String!
@@ -132,7 +136,7 @@ class Property : Equatable{
     /** 
     The designated initializer for the class
     */
-    init(jsonName: String, nativeName: String, type: String, isArray: Bool, isCustomClass: Bool, lang: LangModel)
+    init(jsonName: String, nativeName: String, type: String, isArray: Bool, isCustomClass: Bool, lang: LangModel, parentName: String)
     {
         self.jsonName = jsonName.replacingOccurrences(of: " ", with: "")
         self.nativeName = nativeName.replacingOccurrences(of: " ", with: "")
@@ -140,14 +144,15 @@ class Property : Equatable{
         self.isArray = isArray
         self.isCustomClass = isCustomClass
         self.lang = lang
+        self.parentName = parentName
     }
     
     
     /**
     Convenience initializer which calls the designated initializer with isArray = false and isCustomClass = false
     */
-    convenience init(jsonName: String, nativeName: String, type: String, lang: LangModel){
-        self.init(jsonName: jsonName, nativeName: nativeName, type: type, isArray: false, isCustomClass: false, lang: lang)
+    convenience init(jsonName: String, nativeName: String, type: String, lang: LangModel , parentName: String){
+        self.init(jsonName: jsonName, nativeName: nativeName, type: type, isArray: false, isCustomClass: false, lang: lang, parentName: parentName)
     }
     
     

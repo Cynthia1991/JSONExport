@@ -24,6 +24,9 @@ class LangModel{
 	var importForEachCustomType : String!
     var importHeaderFile : String!
 	var instanceVarDefinition : String!
+    
+    var modelIDDefinition : String!
+    
     var instanceVarWithSpeicalDefinition : String!
     var typesNeedSpecialDefinition : [String]!
 	var langName : String = ""
@@ -71,6 +74,7 @@ class LangModel{
 		getter = dictionary["getter"] as? String
 		importForEachCustomType = dictionary["importForEachCustomType"] as? String
 		instanceVarDefinition = dictionary["instanceVarDefinition"] as? String
+        modelIDDefinition = dictionary["modelIDDefinition"] as? String
         instanceVarWithSpeicalDefinition = dictionary["instanceVarWithSpeicalDefinition"] as? String
         typesNeedSpecialDefinition = dictionary["typesNeedSpecialDefinition"] as? [String]
         

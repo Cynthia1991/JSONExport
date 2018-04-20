@@ -128,18 +128,20 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate, NSTabl
      */
     func updateUIFieldsForSelectedLanguage()
     {
-        loadSelectedLanguageModel()
-        if selectedLang.supportsFirstLineStatement != nil && selectedLang.supportsFirstLineStatement!{
-            firstLineField.isHidden = false
-            firstLineField.placeholderString = selectedLang.firstLineHint
-        }else{
-            firstLineField.isHidden = true
-        }
+        self.loadSelectedLanguageModel()
+        if let _ = selectedLang {
+            if selectedLang.supportsFirstLineStatement != nil && selectedLang.supportsFirstLineStatement!{
+                firstLineField.isHidden = false
+                firstLineField.placeholderString = selectedLang.firstLineHint
+            }else{
+                firstLineField.isHidden = true
+            }
         
-        if selectedLang.modelDefinitionWithParent != nil || selectedLang.headerFileData?.modelDefinitionWithParent != nil{
-            parentClassName.isHidden = false
-        }else{
-            parentClassName.isHidden = true
+            if selectedLang.modelDefinitionWithParent != nil || selectedLang.headerFileData?.modelDefinitionWithParent != nil{
+                parentClassName.isHidden = false
+            }else{
+                parentClassName.isHidden = true
+            }
         }
     }
     
@@ -397,10 +399,11 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate, NSTabl
             return;
         }
         var rootClassName = classNameField.stringValue
-        if rootClassName.characters.count == 0{
+        if rootClassName.count == 0{
             rootClassName = "RootClass"
         }
         sourceText.isEditable = false
+        self.loadSelectedLanguageModel()
         //Do the lengthy process in background, it takes time with more complicated JSONs
         runOnBackground {
             str = stringByRemovingControlCharacters(str)
@@ -415,11 +418,11 @@ class ViewController: NSViewController, NSUserNotificationCenterDelegate, NSTabl
                     }else{
                         json = unionDictionaryFromArrayElements(jsonData as! NSArray)
                     }
-                    self.loadSelectedLanguageModel()
                     self.files.removeAll(keepingCapacity: false)
                     runOnUiThread{
                         let fileGenerator = self.prepareAndGetFilesBuilder()
-                        fileGenerator.addFileWithName(&rootClassName, jsonObject: json, files: &self.files)
+                
+                        fileGenerator.addFileWithName(&rootClassName, jsonObject: json, files: &self.files, parent: rootClassName, isRoot: true)
                         fileGenerator.fixReferenceMismatches(inFiles: self.files)
                         self.files = Array(self.files.reversed())
                         self.sourceText.isEditable = true

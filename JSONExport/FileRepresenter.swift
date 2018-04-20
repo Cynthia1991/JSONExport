@@ -42,6 +42,7 @@ class FileRepresenter{
     */
     var className : String
     
+    var isRoot = false
     /**
     Array of properties which will be included in the file content
     */
@@ -76,8 +77,6 @@ class FileRepresenter{
     After the first time you use the toString() method, this property will contain the file content.
     */
     var fileContent = ""
-    
-  
     /**
     Designated initializer
     */
@@ -101,7 +100,8 @@ class FileRepresenter{
         appendCustomImports()
         //start the model defination
         var definition = ""
-        if lang.modelDefinitionWithParent != nil && parentClassName.characters.count > 0{
+        //if has parent class
+        if lang.modelDefinitionWithParent != nil && parentClassName.count > 0{
             definition = lang.modelDefinitionWithParent.replacingOccurrences(of: modelName, with: className)
             definition = definition.replacingOccurrences(of: modelWithParentClassName, with: parentClassName)
         }else if includeUtilities && lang.defaultParentWithUtilityMethods != nil{
@@ -114,6 +114,7 @@ class FileRepresenter{
         //start the model content body
         fileContent += "\(lang.modelStart)"
         
+        appendIdentifier()
         appendProperties()
         appendSettersAndGetters()
         appendInitializers()
@@ -239,6 +240,21 @@ class FileRepresenter{
                 }
             }
         }
+    }
+    
+    
+    func appendIdentifier()
+    {
+        if let string = lang.modelIDDefinition {
+            fileContent += "\n"
+            var stringVar = string
+        
+            stringVar = stringVar.replacingOccurrences(of: modelName, with: self.className)
+            stringVar = stringVar.replacingOccurrences(of: modelWithParentClassName, with: self.parentClassName)
+        
+            fileContent += stringVar
+        }
+        
     }
     
     /**
